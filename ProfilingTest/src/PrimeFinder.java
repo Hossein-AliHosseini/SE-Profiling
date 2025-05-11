@@ -1,25 +1,34 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class PrimeFinder {
 
-    // Unoptimized prime number finder
+    // Optimized version using Sieve of Eratosthenes algorithm
     public static List<Integer> findPrimesUpTo(int limit) {
-        List<Integer> primes = new ArrayList<>();
+        // Edge case
+        if (limit < 2) {
+            return new ArrayList<>();
+        }
 
-        for (int num = 2; num <= limit; num++) {
-            boolean isPrime = true;
+        boolean[] isPrime = new boolean[limit + 1];
+        Arrays.fill(isPrime, true);
+        isPrime[0] = isPrime[1] = false;
 
-            // Check divisibility up to num-1
-            for (int i = 2; i < num; i++) {
-                if (num % i == 0) {
-                    isPrime = false;
-                    break;
+        // Sieve algorithm
+        for (int i = 2; i * i <= limit; i++) {
+            if (isPrime[i]) {
+                for (int j = i * i; j <= limit; j += i) {
+                    isPrime[j] = false;
                 }
             }
+        }
 
-            if (isPrime) {
-                primes.add(num);
+        // Collect results
+        List<Integer> primes = new ArrayList<>();
+        for (int i = 2; i <= limit; i++) {
+            if (isPrime[i]) {
+                primes.add(i);
             }
         }
 
